@@ -1,131 +1,98 @@
 package com.netcracker.lab.repository;
 
-import com.netcracker.lab.entities.IPerson;
+import com.netcracker.lab.sort_methods.QuickSort;
 
-import java.util.Arrays;
 import java.util.function.Predicate;
 import java.util.Comparator;
 import java.util.Optional;
+import java.util.Arrays;
 import java.util.List;
 
 /**
- * Данный класс предназначен для хранения экземпляров класса Person.
+ * Данный класс предназначен для хранения экземпляров класса.
  */
-public class Repository implements IRepository {
+public class Repository implements ru.vsu.lab.repository.IRepository {
     /**
-     * Пустой массив для хранения экземпляров класса Person.
+     * Пустой массив для хранения экземпляров класса.
      */
-    private IPerson[] personBank;
+    private Object[] bank;
 
     /**
      * Индекс последнего элемента.
      */
-    private int lastIndex = 0;
+    private int length = 0;
 
     /**
      * Конструкторе класса.
-     * В нём выделяется память для массива, хранящего экземпляры класса Person.
+     * В нём выделяется память для массива, хранящего экземпляры класса.
      */
     public Repository() {
-        personBank = new IPerson[10];
-
-        for (int i = 0; i < personBank.length; i++) {
-            personBank[i] = null;
-        }
+        bank = new Object[10];
     }
 
     /**
      * Конструкторе класса.
      * В нём выделяется память для произвольного массива,
-     * хранящего экземпляры класса Person.
+     * хранящего экземпляры класса.
      * @param repositorySize размер репозитория
      */
     public Repository(int repositorySize) {
-        personBank = new IPerson[repositorySize];
+        bank = new Object[repositorySize];
+    }
+
+    @Override
+    public void add(Object o) {
+        if (length == bank.length) {
+            increaseCapacity();
+        }
+        bank[length] = o;
+        length++;
     }
 
     /**
-     * Данный метод предназначен для получения экземпляра класса Person
-     * по индексу из массива personBank.
-     * Если такого элемента не существует возвращается null.
-     * @param index значение индекса массива (нумерация начинается с нуля!).
-     * @return экземпляр класса Optional<Person> или Optional.empty().
+     * Данный метод предназначен для добавления экземпляра класса.
+     * в массив bank.
+     * @param o экземпляра класса который необходимо добавить.
      */
     @Override
-    public Optional<IPerson> get(int index) {
-        if (index < lastIndex) {
-            return Optional.of(personBank[index]);
+    public void add(int index, Object o) {
+        if (length == bank.length) {
+            increaseCapacity();
+        }
+
+        move(index, true);
+        bank[index] = o;
+
+        length++;
+    }
+
+    /**
+     * Данный метод предназначен для получения экземпляра класса
+     * по индексу из массива bank.
+     * Если такого элемента не существует возвращается null.
+     * @param index значение индекса массива (нумерация начинается с нуля!).
+     * @return экземпляр класса Optional<Object> или Optional.empty().
+     */
+    @Override
+    public Optional<Object> get(int index) {
+        if (index < length) {
+            return Optional.of(bank[index]);
         } else {
             return Optional.empty();
         }
     }
 
     /**
-     *Метод, увеличивающий массив personBank.
+     *Метод, увеличивающий массив bank.
      */
     private void increaseCapacity() {
-        IPerson[] localPersonBank =
-                new IPerson[personBank.length + (personBank.length + 2) / 2];
+        Object[] localBank =
+                new Object[bank.length + (bank.length + 2) / 2];
 
-        for (int i = personBank.length; i < localPersonBank.length; i++) {
-            localPersonBank[i] = null;
-        }
+        System.arraycopy(bank, 0, localBank,
+                0, bank.length);
 
-        System.arraycopy(personBank, 0, localPersonBank,
-                0, personBank.length);
-
-        personBank = localPersonBank;
-    }
-
-    /**
-     * Данный метод предназначен для получения экземпляра класса Person
-     * по id из массива personBank.
-     * Если такого элемента не существует возвращается null.
-     * @param id значение id экземпляра класса Person.
-     * @return экземпляр класса Optional<Person> или Optional.empty().
-     */
-    public Optional<IPerson> getPersonById(int id) {
-        for (int i = 0; i < lastIndex; i++) {
-            if (i == id) {
-                return Optional.of(personBank[i]);
-            }
-        }
-        return Optional.empty();
-    }
-
-    /**
-     * Данный метод предназначен для добавления экземпляра класса Person
-     * в массив personBank.
-     * @param person экземпляра класса Person который необходимо добавить.
-     */
-    @Override
-    public void add(IPerson person) {
-        if (lastIndex == personBank.length) {
-            increaseCapacity();
-        }
-
-        personBank[lastIndex] = person;
-        lastIndex++;
-
-    }
-
-    /**
-     * Данный метод предназначен для удаления экземпляра класса Person
-     * из массива personBank по индексу.
-     * Если экземпляра класса Person с таким индексом нет, ничего не меняется.
-     * @param index значения индекса массива (нумерация начинается с нуля!).
-     */
-    public void delete(int index) {
-        if (index < lastIndex) {
-            for (int i = 0; i < lastIndex; i++) {
-                if (i == index) {
-                    personBank[i] = null;
-                }
-            }
-
-            move(index, false);
-            lastIndex--;
-        }
+        bank = localBank;
     }
 
     /**
@@ -134,78 +101,70 @@ public class Repository implements IRepository {
      * @param isShiftToRight true - сдвиг вправо, false - сдвиг влево.
      */
     private void move(int index, boolean isShiftToRight) {
-        IPerson[] localBank = new IPerson[personBank.length];
+        Object[] localBank = new Object[bank.length];
         if (isShiftToRight) {
-            System.arraycopy(personBank, index, localBank,
-                    index, personBank.length - (index + 1));
+            System.arraycopy(bank, index, localBank,
+                    index, bank.length - (index + 1));
 
-            System.arraycopy(localBank, index, personBank,
+            System.arraycopy(localBank, index, bank,
                     index + 1, localBank.length - (index + 1));
         } else  {
-            System.arraycopy(personBank, index + 1, localBank,
-                    index + 1, personBank.length - (index + 1));
+            System.arraycopy(bank, index + 1, localBank,
+                    index + 1, bank.length - (index + 1));
 
-            System.arraycopy(localBank, index + 1, personBank,
+            System.arraycopy(localBank, index + 1, bank,
                     index, localBank.length - (index + 1));
 
-            personBank[personBank.length - 1] = null;
+            bank[bank.length - 1] = null;
         }
     }
 
     @Override
-    public void set(int index, IPerson person) {
-        if (lastIndex == personBank.length) {
-            increaseCapacity();
-        }
-
-        move(index, true);
-        personBank[index] = person;
-
-        lastIndex++;
-    }
-
-    @Override
-    public List<IPerson> toList() {
-        return Arrays.asList(personBank);
+    public Object set(int index, Object o1) {
+        Object o2 = bank[index];
+        bank[index] = o1;
+        return o2;
     }
 
     /**
-     * Данная функция меняет местами людей в репозитории.
-     * Предназначена для сортировки
-     * @param index1 индекс первого элемента
-     * @param index2 индекс второго элемента
+     * Данный метод предназначен для удаления экземпляра класса.
+     * из массива bank по индексу.
+     * Если экземпляра класса с таким индексом нет, ничего не меняется.
+     * @param index значения индекса массива (нумерация начинается с нуля!).
      */
-    private void swap(int index1, int index2) {
-        if (index1 < lastIndex && index2 < lastIndex) {
-            IPerson bufIPerson = personBank[index1];
-            personBank[index1] = personBank[index2];
-            personBank[index2] = bufIPerson;
-        }
-    }
-
-    @Override
-    public void sortBy(Comparator<IPerson> comparator) {
-        int swapCount;
-        do {
-            swapCount = 0;
-            for (int i = 0; i < lastIndex; i++) {
-                for (int j = 0; j < lastIndex; j++) {
-                    if (comparator.compare(personBank[i], personBank[j]) < 0) {
-                        swap(i, j);
-                        swapCount++;
-                    }
+    public Optional<Object> delete(int index) {
+        Object o = null;
+        if (index < length) {
+            for (int i = 0; i < length; i++) {
+                if (i == index) {
+                    o = bank[i];
+                    bank[i] = null;
+                    break;
                 }
             }
-
-        } while (swapCount == 0);
+            move(index, false);
+            length--;
+            return Optional.of(o);
+        }
+        return Optional.empty();
     }
 
     @Override
-    public IRepository searchBy(Predicate<IPerson> condition) {
-        IRepository localIRepository = new Repository();
-        for (int i = 0; i < lastIndex; i++) {
-            if (condition.test(personBank[i])) {
-                localIRepository.add(personBank[i]);
+    public List<Object> toList() {
+        return Arrays.asList(bank);
+    }
+
+    @Override
+    public void sortBy(Comparator comparator) {
+        //new QuickSort(this, comparator);
+    }
+
+    @Override
+    public ru.vsu.lab.repository.IRepository searchBy(Predicate condition) {
+        ru.vsu.lab.repository.IRepository localIRepository = new Repository();
+        for (int i = 0; i < length; i++) {
+            if (condition.test(bank[i])) {
+                localIRepository.add(bank[i]);
             }
         }
         return localIRepository;
@@ -213,17 +172,25 @@ public class Repository implements IRepository {
 
     /**
      * Перегрузка метода toString.
-     * @return построчный список элементов массива personBank, каждый из
+     * @return построчный список элементов массива bank, каждый из
      * которых вызывает свою перегрузку toString.
-     * (см. докумнтацию Person.toString())
+     * (см. докумнтацию Object.toString())
      */
     @Override
     public final String toString() {
         StringBuilder buf = new StringBuilder("");
-        for (int i = 0; i < lastIndex; i++) {
-            buf.append(personBank[i].toString());
+        for (int i = 0; i < length; i++) {
+            buf.append(bank[i].toString());
             buf.append("\n");
         }
         return buf.toString();
+    }
+
+    public Object[] getBank() {
+        return bank;
+    }
+
+    public int getLength() {
+        return length;
     }
 }

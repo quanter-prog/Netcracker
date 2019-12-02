@@ -2,86 +2,102 @@ package com.netcracker.lab;
 
 import com.netcracker.lab.entities.Division;
 import com.netcracker.lab.entities.Person;
-import com.netcracker.lab.entities.enums.Gender;
-import com.netcracker.lab.repository.IRepository;
-import com.netcracker.lab.repository.Repository;
+import com.netcracker.lab.repository.PersonRepository;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import ru.vsu.lab.entities.IDivision;
+import ru.vsu.lab.entities.enums.Gender;
+import ru.vsu.lab.repository.IPersonRepository;
 
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class CSVLoader {
 
     private String path;
 
+    private HashSet<IDivision> divisions;
+
     CSVLoader(String path) {
         this.path = path;
-    }
+        divisions = new HashSet<>();
+        }
 
-    public IRepository getRepository() {
-        return fillRepository(read());
+    public IPersonRepository getRepository() {
+        return read();
     }
 
     /**
-     * Данная функция заполняет репозиторий даннымыми из файла.
-     * @param list list с информацией из файла
-     * @return репозиотрий с людьми из файла
+     * Проверка вхождения значения по имени.
+     * @param name название отдела.
+     * @return имеется ли такой отдел?
      */
-    private Repository fillRepository(List<String[]> list) {
-        Repository rep = new Repository();
-
-        for (String[] arr : list) {
-            Person person;
-            StringBuilder buf = new StringBuilder("");
-
-            for (String s : arr) {
-                buf.append(s);
+    private boolean hasDivision(String name) {
+        Iterator<IDivision> iterator = divisions.iterator();
+        while (iterator.hasNext()) {
+            if (iterator.next().getName().equals(name)) {
+                return true;
             }
-
-            String line = buf.toString();
-            String[] values = line.split(";");
-
-            DateTimeFormatter dtmf = DateTimeFormat.forPattern("DD.MM.YYYY");
-            Division division = new Division(values[4]);
-            person = new Person(values[1],
-                    Integer.parseInt(values[0]),
-                    dtmf.parseLocalDate(values[3]),
-                    Gender.valueOf(values[2].toUpperCase()),
-                    division,
-                    BigDecimal.valueOf(Double.parseDouble(values[5])));
-            rep.add(person);
         }
-
-        return rep;
+        return false;
     }
 
     /**
      * Данная функция считывает из файла информацию и записывает её в list.
      * @return list с информацией из файла
      */
-    public List<String[]> read() {
-        List<String[]> list = new ArrayList<>();
+    public IPersonRepository read() {
+        IPersonRepository rep = new PersonRepository();
         try {
             Reader reader = Files.newBufferedReader(Paths.get(path));
             CSVReader csvReader = new CSVReaderBuilder(reader)
-                    .withSkipLines(1)
                     .build();
 
+            while (csvReader.iterator().hasNext()) {
+                StringBuilder buf = new StringBuilder("");
+                String[] line = csvReader.peek();
 
-            list = csvReader.readAll();
+                for (String s : line) {
+                    buf.append(s);
+                }
+
+                line = buf.toString().split(";");
+
+                DateTimeFormatter formatter =
+                        DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
+                if (!hasDivision(line[4])) {
+                    divisions.add(new Division(line[4]));
+                }
+
+                IDivision division = null;
+                Iterator<IDivision> iterator = divisions.iterator();
+                while (iterator.hasNext()) {
+                    division = iterator.next();
+                    if (division.getName().equals(line[4])) {
+                        break;
+                    }
+                }
+
+                Person person = new Person(line[1],
+                        Integer.parseInt(line[0]),
+                        LocalDate.parse(line[3], formatter),
+                        Gender.valueOf(line[2].toUpperCase()),
+                        division,
+                        BigDecimal.valueOf(Double.parseDouble(line[5])));
+                rep.add(person);
+            }
+
             reader.close();
             csvReader.close();
-            return list;
         } catch (Exception ex) {
             ex = new Exception();
         }
-        return list;
+        return rep;
     }
 }

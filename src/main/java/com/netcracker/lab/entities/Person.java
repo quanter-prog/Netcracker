@@ -1,9 +1,13 @@
 package com.netcracker.lab.entities;
 
-import com.netcracker.lab.entities.enums.Gender;
 import org.joda.time.DateTime;
+import ru.vsu.lab.entities.IDivision;
+import ru.vsu.lab.entities.IPerson;
+import ru.vsu.lab.entities.enums.Gender;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Period;
 
 /**
  * Данный класс описывает человека.
@@ -38,7 +42,7 @@ public class Person implements IPerson {
     /**
      * Дата рождения.
      */
-    private org.joda.time.LocalDate birthDate;
+    private LocalDate birthDate;
 
     /**
      * Пол человека.
@@ -66,7 +70,7 @@ public class Person implements IPerson {
     public Person(String firstName, String lastName,
                   String birth, Gender gender,
                   BigDecimal salary, IDivision division) {
-        this.birthDate = org.joda.time.LocalDate.parse(birth);
+        this.birthDate = LocalDate.parse(birth);
         this.firstName = firstName;
         this.division = division;
         this.lastName = lastName;
@@ -74,6 +78,16 @@ public class Person implements IPerson {
         this.salary = salary;
         personId = id;
         id++;
+    }
+
+    /**
+     * Конструктор.
+     * @param firstName имя
+     * @param lastName фамилия
+     */
+    public Person(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     /**
@@ -85,7 +99,7 @@ public class Person implements IPerson {
      * @param division Отдел.
      * @param salary Заработная плата.
      */
-    public Person(String firstName, int personId, org.joda.time.LocalDate birthDate,
+    public Person(String firstName, int personId, LocalDate birthDate,
                   Gender gender, IDivision division, BigDecimal salary) {
         this.firstName = firstName;
         this.birthDate = birthDate;
@@ -96,98 +110,61 @@ public class Person implements IPerson {
     }
 
     /**
+     * Пустой конструктор для фабрики.
+     */
+    public Person() {
+    }
+
+    /**
      * Данный метод возвращает число, отражающее возраст человека.
      * (с точностью до месяца)
      * @return Возраст.
      */
     public final Integer getAge() {
-        if (birthDate.getMonthOfYear() < DateTime.now().getMonthOfYear()) {
-            return DateTime.now().getYear() - this.birthDate.getYear();
-        } else {
-            return DateTime.now().getYear() - this.birthDate.getYear() - 1;
-        }
+        return Period.between(this.birthDate, LocalDate.now()).getYears();
     }
 
-    /**
-     * Метод доступа к полю, описывающему пол человека.
-     * @return Пол человека.
-     */
     @Override
     public Gender getGender() {
         return this.gender;
     }
 
-    /**
-     * Метод доступа к полю, описывающему пол человека.
-     * Устанавливает пол.
-     * @param gender Пол.
-     */
     @Override
     public void setGender(Gender gender) {
         this.gender = gender;
     }
 
-    /**
-     * Метод доступа к отделу, в котором работает человек.
-     * Возвращает отдел, в котором работает человек.
-     * @return Отдел.
-     */
     @Override
     public IDivision getDivision() {
         return this.division;
     }
 
-    /**
-     * Метод доступа к отделу, в котором работает человек.
-     * Позволяет установить отдел.
-     * @param division Отдел.
-     */
     @Override
     public void setDivision(IDivision division) {
         this.division = division;
     }
 
-    /**
-     * Метод доступа к заработной плате человека.
-     * @return значение заработной платы человека.
-     */
     @Override
     public BigDecimal getSalary() {
         return salary;
     }
 
-    /**
-     * Метод доступа к заработной плате человека.
-     * @param salary заработная плата.
-     */
     @Override
     public void setSalary(BigDecimal salary) {
         this.salary = salary;
     }
 
-    /**
-     * Перегрузка метода toString.
-     * @return Имя и фамилия человека через пробел.
-     */
     @Override
     public final String toString() {
         return this.firstName + " " + this.getGender() + ", " + this.getAge()
                 + " лет, " + this.birthDate.getYear() + " года рождения.";
     }
 
-    /**
-     * Метод доступа к id человека.
-     * @return id человека.
-     */
     @Override
     public Integer getId() {
         return personId;
     }
 
-    /**
-     * Метод доступа к id человека.
-     * @param id id человека.
-     */
     @Override
     public void setId(Integer id) {
         this.personId = id;
@@ -220,12 +197,12 @@ public class Person implements IPerson {
     }
 
     @Override
-    public org.joda.time.LocalDate getBirthdate() {
+    public LocalDate getBirthdate() {
         return this.birthDate;
     }
 
     @Override
-    public void setBirthdate(org.joda.time.LocalDate birthdate) {
-        this.birthDate = birthdate;
+    public void setBirthdate(LocalDate localDate) {
+        this.birthDate = localDate;
     }
 }

@@ -1,6 +1,6 @@
 package com.netcracker.lab.entities.comparators;
 
-import com.netcracker.lab.entities.IPerson;
+import ru.vsu.lab.entities.IPerson;
 
 import java.util.Comparator;
 
