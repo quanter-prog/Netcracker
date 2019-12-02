@@ -14,7 +14,7 @@ public class Main {
      */
     public static void main(final String[] args) {
         CSVLoader loader = new CSVLoader(PATH);
-        System.out.println(loader.getRepository().toString());
+        System.out.println(loader.getRepository().toList().toString());
     }
 
 
