@@ -4,6 +4,9 @@ import ru.vsu.lab.entities.IPerson;
 
 import java.util.Comparator;
 
+/**
+ * Компаратор для сравнения людей по заработной плате.
+ */
 public class PersonSalaryComparator implements Comparator<IPerson> {
     @Override
     public int compare(IPerson p1, IPerson p2) {

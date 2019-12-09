@@ -1,17 +1,17 @@
 package com.netcracker.lab.repository;
 
-import com.netcracker.lab.sort_methods.QuickSort;
+import ru.vsu.lab.repository.IRepository;
 
-import java.util.function.Predicate;
-import java.util.Comparator;
-import java.util.Optional;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Данный класс предназначен для хранения экземпляров класса.
+ * @param <T> тип хранимых данных.
  */
-public class Repository implements ru.vsu.lab.repository.IRepository {
+public class Repository<T> implements IRepository<T> {
     /**
      * Пустой массив для хранения экземпляров класса.
      */
@@ -40,54 +40,11 @@ public class Repository implements ru.vsu.lab.repository.IRepository {
         bank = new Object[repositorySize];
     }
 
-    @Override
-    public void add(Object o) {
-        if (length == bank.length) {
-            increaseCapacity();
-        }
-        bank[length] = o;
-        length++;
-    }
-
-    /**
-     * Данный метод предназначен для добавления экземпляра класса.
-     * в массив bank.
-     * @param o экземпляра класса который необходимо добавить.
-     */
-    @Override
-    public void add(int index, Object o) {
-        if (length == bank.length) {
-            increaseCapacity();
-        }
-
-        move(index, true);
-        bank[index] = o;
-
-        length++;
-    }
-
-    /**
-     * Данный метод предназначен для получения экземпляра класса
-     * по индексу из массива bank.
-     * Если такого элемента не существует возвращается null.
-     * @param index значение индекса массива (нумерация начинается с нуля!).
-     * @return экземпляр класса Optional<Object> или Optional.empty().
-     */
-    @Override
-    public Optional<Object> get(int index) {
-        if (index < length) {
-            return Optional.of(bank[index]);
-        } else {
-            return Optional.empty();
-        }
-    }
-
     /**
      *Метод, увеличивающий массив bank.
      */
     private void increaseCapacity() {
-        Object[] localBank =
-                new Object[bank.length + (bank.length + 2) / 2];
+        Object[] localBank = new Object[bank.length + (bank.length + 2) / 2];
 
         System.arraycopy(bank, 0, localBank,
                 0, bank.length);
@@ -120,19 +77,45 @@ public class Repository implements ru.vsu.lab.repository.IRepository {
     }
 
     @Override
-    public Object set(int index, Object o1) {
-        Object o2 = bank[index];
-        bank[index] = o1;
-        return o2;
+    public void add(T o) {
+        if (length == bank.length) {
+            increaseCapacity();
+        }
+        bank[length] = o;
+        length++;
     }
 
-    /**
-     * Данный метод предназначен для удаления экземпляра класса.
-     * из массива bank по индексу.
-     * Если экземпляра класса с таким индексом нет, ничего не меняется.
-     * @param index значения индекса массива (нумерация начинается с нуля!).
-     */
-    public Optional<Object> delete(int index) {
+    @Override
+    public void add(int index, T o) {
+        if (length == bank.length) {
+            increaseCapacity();
+        }
+
+        move(index, true);
+        bank[index] = o;
+
+        length++;
+    }
+
+    @Override
+    public T get(int index) {
+        if (index < length) {
+            return (T) bank[index];
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public T set(int index, T o1) {
+        Object o2 = bank[index];
+        bank[index] = null;
+        bank[index] = o1;
+        return (T) o2;
+    }
+
+    @Override
+    public T delete(int index) {
         Object o = null;
         if (index < length) {
             for (int i = 0; i < length; i++) {
@@ -144,14 +127,14 @@ public class Repository implements ru.vsu.lab.repository.IRepository {
             }
             move(index, false);
             length--;
-            return Optional.of(o);
+            return (T) o;
         }
-        return Optional.empty();
+        return null;
     }
 
     @Override
-    public List<Object> toList() {
-        return Arrays.asList(bank);
+    public List<T> toList() {
+        return Arrays.asList((T) bank);
     }
 
     @Override
@@ -160,22 +143,16 @@ public class Repository implements ru.vsu.lab.repository.IRepository {
     }
 
     @Override
-    public ru.vsu.lab.repository.IRepository searchBy(Predicate condition) {
-        ru.vsu.lab.repository.IRepository localIRepository = new Repository();
+    public IRepository<T> searchBy(Predicate<T> condition) {
+        IRepository<T> localIRepository = new Repository<>();
         for (int i = 0; i < length; i++) {
-            if (condition.test(bank[i])) {
-                localIRepository.add(bank[i]);
+            if (condition.test((T) bank[i])) {
+                localIRepository.add((T) bank[i]);
             }
         }
         return localIRepository;
     }
 
-    /**
-     * Перегрузка метода toString.
-     * @return построчный список элементов массива bank, каждый из
-     * которых вызывает свою перегрузку toString.
-     * (см. докумнтацию Object.toString())
-     */
     @Override
     public final String toString() {
         StringBuilder buf = new StringBuilder("");
@@ -184,13 +161,5 @@ public class Repository implements ru.vsu.lab.repository.IRepository {
             buf.append("\n");
         }
         return buf.toString();
-    }
-
-    public Object[] getBank() {
-        return bank;
-    }
-
-    public int getLength() {
-        return length;
     }
 }

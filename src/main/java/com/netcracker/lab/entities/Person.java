@@ -1,6 +1,5 @@
 package com.netcracker.lab.entities;
 
-import org.joda.time.DateTime;
 import ru.vsu.lab.entities.IDivision;
 import ru.vsu.lab.entities.IPerson;
 import ru.vsu.lab.entities.enums.Gender;
@@ -110,17 +109,13 @@ public class Person implements IPerson {
     }
 
     /**
-     * Пустой конструктор для фабрики.
+     * Конструктор по умолчанию.
      */
     public Person() {
     }
 
-    /**
-     * Данный метод возвращает число, отражающее возраст человека.
-     * (с точностью до месяца)
-     * @return Возраст.
-     */
-    public final Integer getAge() {
+    @Override
+    public Integer getAge() {
         return Period.between(this.birthDate, LocalDate.now()).getYears();
     }
 
@@ -155,9 +150,11 @@ public class Person implements IPerson {
     }
 
     @Override
-    public final String toString() {
-        return this.firstName + " " + this.getGender() + ", " + this.getAge()
-                + " лет, " + this.birthDate.getYear() + " года рождения.";
+    public String toString() {
+        return this.firstName + ", "
+                + this.getGender().toString().toLowerCase() + ", "
+                + "was born in " + this.birthDate.getYear() + ", "
+                + this.getAge() + " y.o.";
     }
 
     @Override
@@ -170,19 +167,13 @@ public class Person implements IPerson {
         this.personId = id;
     }
 
-    /**
-     * Метод доступа к полю firstName.
-     * @return Имя.
-     */
-    public final String getFirstName() {
+    @Override
+    public String getFirstName() {
         return firstName;
     }
 
-    /**
-     * Метод доступа для смены имени.
-     * @param firstName новое имя.
-     */
-    public final void setFirstName(final String firstName) {
+    @Override
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
