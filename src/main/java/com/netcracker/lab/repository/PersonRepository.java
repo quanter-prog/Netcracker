@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 
 /**
  * Репозиторий для хранения объектов, имплементирующих интерфейс IPerson.
@@ -17,20 +18,17 @@ import java.util.function.Predicate;
  */
 public class PersonRepository implements IPersonRepository {
 
-    /**
-     * Сортировщик для класса.
-     */
+    /** Сортировщик для класса. */
     @LabInject
     private ISorter sorter;
 
-    /**
-     * Пустой массив для хранения экземпляров класса.
-     */
+    /** Логер. */
+    private static Logger log = Logger.getLogger(PersonRepository.class.getName());
+
+    /** Пустой массив для хранения экземпляров класса. */
     private IPerson[] bank;
 
-    /**
-     * Индекс последнего элемента.
-     */
+    /** Индекс последнего элемента. */
     private int length = 0;
 
     /**
@@ -135,6 +133,8 @@ public class PersonRepository implements IPersonRepository {
         }
         bank[length] = person;
         length++;
+
+        log.info("Person added to repository.");
     }
 
     @Override
@@ -147,12 +147,16 @@ public class PersonRepository implements IPersonRepository {
         bank[index] = person;
 
         length++;
+
+        log.info("Person added to repository.");
     }
 
     @Override
     public IPerson set(int index, IPerson p1) {
         IPerson p2 = bank[index];
         bank[index] = p1;
+
+        log.info("Person added to repository.");
         return p2;
     }
 
@@ -178,8 +182,12 @@ public class PersonRepository implements IPersonRepository {
             }
             move(index, false);
             length--;
+
+            log.info("Person has been successfully deleted from repository.");
             return p;
         }
+
+        log.warning("Impossible to delete person.");
         return null;
     }
 
@@ -188,6 +196,7 @@ public class PersonRepository implements IPersonRepository {
         this.sorter.setRepository(this);
         this.sorter.setComparator(comparator);
         this.sorter.sort();
+        log.info("Repository has been sorted.");
     }
 
     @Override

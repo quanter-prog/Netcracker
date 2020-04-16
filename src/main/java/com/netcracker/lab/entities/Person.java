@@ -13,44 +13,28 @@ import java.time.Period;
  */
 public class Person implements IPerson {
 
-    /**
-     * id - идентификационный номер.
-     */
+    /** id - идентификационный номер. */
     private static int id = 0;
 
-    /**
-     * personid - идентификационный номер человека (экземпляра класса).
-     */
+    /** personid - идентификационный номер человека (экземпляра класса).*/
     private int personId;
 
-    /**
-     * firstName - имя человека.
-     */
+    /** firstName - имя человека. */
     private String firstName;
 
-    /**
-     * secondName - фамилия человека.
-     */
+    /** lastName - фамилия человека. */
     private String lastName;
 
-    /**
-     * Отдел, в котором работает человек.
-     */
+    /** Отдел, в котором работает человек. */
     private IDivision division;
 
-    /**
-     * Дата рождения.
-     */
+    /** Дата рождения. */
     private LocalDate birthDate;
 
-    /**
-     * Пол человека.
-     */
+    /** Пол человека. */
     private Gender gender;
 
-    /**
-     * Заработная плата человека.
-     */
+    /** Заработная плата человека. */
     private BigDecimal salary;
 
     /**
@@ -108,9 +92,7 @@ public class Person implements IPerson {
         this.salary = salary;
     }
 
-    /**
-     * Конструктор по умолчанию.
-     */
+    /** Конструктор по умолчанию. */
     public Person() {
     }
 

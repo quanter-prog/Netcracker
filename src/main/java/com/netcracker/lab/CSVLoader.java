@@ -15,6 +15,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
+import java.util.logging.Logger;
 
 /**
  * Класс, реализующий считывание из файла информации.
@@ -22,14 +23,12 @@ import java.util.HashSet;
  */
 public class CSVLoader {
 
-    /**
-     * Директория файла.
-     */
+    private static Logger log = Logger.getLogger(CSVLoader.class.getName());
+
+    /** Директория файла. */
     private String path;
 
-    /**
-     * Репозиторий для записи информации из файла.
-     */
+    /** Репозиторий для записи информации из файла. */
     private IPersonRepository repository;
 
     /**
@@ -125,7 +124,10 @@ public class CSVLoader {
             reader.close();
             csvReader.close();
         } catch (Exception ex) {
+            log.warning("Impossible to read CSV file!");
             ex = new Exception();
         }
+
+        log.info("CSV file was written in person repository.");
     }
 }

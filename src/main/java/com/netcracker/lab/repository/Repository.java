@@ -6,20 +6,21 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 
 /**
  * Данный класс предназначен для хранения экземпляров класса.
  * @param <T> тип хранимых данных.
  */
 public class Repository<T> implements IRepository<T> {
-    /**
-     * Пустой массив для хранения экземпляров класса.
-     */
+
+    /** Логер. */
+    private static Logger log = Logger.getLogger(Repository.class.getName());
+
+    /** Пустой массив для хранения экземпляров класса. */
     private Object[] bank;
 
-    /**
-     * Индекс последнего элемента.
-     */
+    /** Индекс последнего элемента. */
     private int length = 0;
 
     /**
@@ -83,6 +84,8 @@ public class Repository<T> implements IRepository<T> {
         }
         bank[length] = o;
         length++;
+
+        log.info("Object has been added to Repository.");
     }
 
     @Override
@@ -95,6 +98,8 @@ public class Repository<T> implements IRepository<T> {
         bank[index] = o;
 
         length++;
+
+        log.info("Object has been added to Repository.");
     }
 
     @Override
@@ -111,6 +116,8 @@ public class Repository<T> implements IRepository<T> {
         Object o2 = bank[index];
         bank[index] = null;
         bank[index] = o1;
+
+        log.info("Object has been added to Repository.");
         return (T) o2;
     }
 
@@ -127,8 +134,12 @@ public class Repository<T> implements IRepository<T> {
             }
             move(index, false);
             length--;
+
+            log.info("Object has been successfully deleted from repository.");
             return (T) o;
         }
+
+        log.warning("Impossible to delete object.");
         return null;
     }
 

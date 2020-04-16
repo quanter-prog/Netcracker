@@ -14,19 +14,13 @@ public class Division implements IDivision {
      */
     private static int id = 0;
 
-    /**
-     * Уникальный идентификатор отдела.
-     */
+    /** Уникальный идентификатор отдела. */
     private int divisionId;
 
-    /**
-     * Название отдела.
-     */
+    /** Название отдела. */
     private String name;
 
-    /**
-     * Конструктор класса по умолчанию.
-     */
+    /** Конструктор класса по умолчанию. */
     public Division() {
     }
 
