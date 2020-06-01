@@ -1,10 +1,17 @@
 package com.netcracker.lab.repository;
 
+import com.netcracker.lab.entities.Person;
 import com.netcracker.lab.inject.LabInject;
 import com.netcracker.lab.sort_methods.ISorter;
+import com.netcracker.lab.sort_methods.QuickSort;
 import ru.vsu.lab.entities.IPerson;
 import ru.vsu.lab.repository.IPersonRepository;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -16,16 +23,22 @@ import java.util.logging.Logger;
  * Репозиторий для хранения объектов, имплементирующих интерфейс IPerson.
  * (для хранения людей)
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class PersonRepository implements IPersonRepository {
 
     /** Сортировщик для класса. */
     @LabInject
+    @XmlElement
+    @XmlJavaTypeAdapter(QuickSort.Adapter.class)
     private ISorter sorter;
 
     /** Логер. */
     private static Logger log = Logger.getLogger(PersonRepository.class.getName());
 
     /** Пустой массив для хранения экземпляров класса. */
+    @XmlElement(name = "person")
+    @XmlJavaTypeAdapter(Person.Adapter.class)
     private IPerson[] bank;
 
     /** Индекс последнего элемента. */
@@ -76,7 +89,7 @@ public class PersonRepository implements IPersonRepository {
 
             System.arraycopy(localBank, index, bank,
                     index + 1, localBank.length - (index + 1));
-        } else  {
+        } else {
             System.arraycopy(bank, index + 1, localBank,
                     index + 1, bank.length - (index + 1));
 

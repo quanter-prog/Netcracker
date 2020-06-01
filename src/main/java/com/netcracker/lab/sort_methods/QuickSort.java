@@ -3,12 +3,15 @@ package com.netcracker.lab.sort_methods;
 import com.netcracker.lab.repository.PersonRepository;
 import ru.vsu.lab.entities.IPerson;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.util.Comparator;
 
 /**
  * Класс, реализующий быструю сортировку.
  * Сортировка возможна только для IPersonRepository.
  */
+@XmlRootElement
 public class QuickSort implements ISorter {
 
     /**
@@ -29,6 +32,11 @@ public class QuickSort implements ISorter {
     public QuickSort(PersonRepository repository, Comparator comparator) {
         this.repository = repository;
         this.comparator = comparator;
+    }
+
+    public static class Adapter extends XmlAdapter<QuickSort,ISorter> {
+        public ISorter unmarshal(QuickSort v) { return v; }
+        public QuickSort marshal(ISorter v) { return (QuickSort) v; }
     }
 
     /**

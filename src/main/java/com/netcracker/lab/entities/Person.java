@@ -4,6 +4,12 @@ import ru.vsu.lab.entities.IDivision;
 import ru.vsu.lab.entities.IPerson;
 import ru.vsu.lab.entities.enums.Gender;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
@@ -11,6 +17,8 @@ import java.time.Period;
 /**
  * Данный класс описывает человека.
  */
+@XmlRootElement(name = "person")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Person implements IPerson {
 
     /** id - идентификационный номер. */
@@ -26,6 +34,8 @@ public class Person implements IPerson {
     private String lastName;
 
     /** Отдел, в котором работает человек. */
+    @XmlElement
+    @XmlJavaTypeAdapter(Division.Adapter.class)
     private IDivision division;
 
     /** Дата рождения. */
@@ -94,6 +104,11 @@ public class Person implements IPerson {
 
     /** Конструктор по умолчанию. */
     public Person() {
+    }
+
+    public static class Adapter extends XmlAdapter<Person,IPerson> {
+        public IPerson unmarshal(Person v) { return v; }
+        public Person marshal(IPerson v) { return (Person) v; }
     }
 
     @Override
