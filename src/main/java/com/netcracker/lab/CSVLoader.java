@@ -91,6 +91,9 @@ public class CSVLoader {
 
             while (csvReader.iterator().hasNext()) {
                 StringBuilder buf = new StringBuilder("");
+                if (csvReader.peek() == null) {
+                    break;
+                }
                 String[] line = csvReader.peek();
 
                 for (String s : line) {
@@ -125,7 +128,7 @@ public class CSVLoader {
             csvReader.close();
         } catch (Exception ex) {
             log.warning("Impossible to read CSV file!");
-            ex = new Exception();
+            ex.printStackTrace();
         }
 
         log.info("CSV file was written in person repository.");
