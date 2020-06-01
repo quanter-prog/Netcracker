@@ -39,6 +39,7 @@ public class Person implements IPerson {
     private IDivision division;
 
     /** Дата рождения. */
+    @XmlJavaTypeAdapter(DateAdapter.class)
     private LocalDate birthDate;
 
     /** Пол человека. */
@@ -109,6 +110,11 @@ public class Person implements IPerson {
     public static class Adapter extends XmlAdapter<Person,IPerson> {
         public IPerson unmarshal(Person v) { return v; }
         public Person marshal(IPerson v) { return (Person) v; }
+    }
+
+    public static class DateAdapter extends XmlAdapter<String,LocalDate> {
+        public LocalDate unmarshal(String v) { return LocalDate.parse(v); }
+        public String marshal(LocalDate v) { return v.toString(); }
     }
 
     @Override
@@ -185,6 +191,7 @@ public class Person implements IPerson {
     }
 
     @Override
+    @XmlJavaTypeAdapter(DateAdapter.class)
     public LocalDate getBirthdate() {
         return this.birthDate;
     }
