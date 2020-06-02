@@ -1,7 +1,16 @@
 package com.netcracker.lab.repository;
 
+import com.netcracker.lab.inject.LabInject;
+import com.netcracker.lab.sort_methods.ISorter;
+import com.netcracker.lab.sort_methods.QuickSort;
 import ru.vsu.lab.repository.IRepository;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -12,12 +21,22 @@ import java.util.logging.Logger;
  * Данный класс предназначен для хранения экземпляров класса.
  * @param <T> тип хранимых данных.
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlJavaTypeAdapter(Repository.Adapter.class)
 public class Repository<T> implements IRepository<T> {
 
     /** Логер. */
     private static Logger log = Logger.getLogger(Repository.class.getName());
 
+    /** Сортировщик для класса. */
+    @LabInject
+    @XmlElement
+    @XmlJavaTypeAdapter(QuickSort.Adapter.class)
+    private ISorter sorter;
+
     /** Пустой массив для хранения экземпляров класса. */
+    @XmlElement(name = "bank")
     private Object[] bank;
 
     /** Индекс последнего элемента. */
@@ -39,6 +58,11 @@ public class Repository<T> implements IRepository<T> {
      */
     public Repository(int repositorySize) {
         bank = new Object[repositorySize];
+    }
+
+    public static class Adapter extends XmlAdapter<Repository, IRepository> {
+        public IRepository unmarshal(Repository r) { return r; }
+        public Repository marshal(IRepository r) { return (Repository) r; }
     }
 
     /**

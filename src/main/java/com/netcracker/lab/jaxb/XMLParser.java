@@ -1,7 +1,11 @@
 package com.netcracker.lab.jaxb;
 
+import com.netcracker.lab.entities.Person;
 import com.netcracker.lab.repository.PersonRepository;
+import com.netcracker.lab.repository.Repository;
+import ru.vsu.lab.entities.IPerson;
 import ru.vsu.lab.repository.IPersonRepository;
+import ru.vsu.lab.repository.IRepository;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -18,9 +22,9 @@ public class XMLParser {
      * @param repository репозиторий.
      * @param xml_path путь xml файла.
      */
-    public static void parseRepository(IPersonRepository repository, String xml_path) {
+    public static void parseRepository(IRepository<IPerson> repository, String xml_path) {
         try {
-            JAXBContext context = JAXBContext.newInstance(PersonRepository.class);
+            JAXBContext context = JAXBContext.newInstance(Repository.class, Person.class);
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 

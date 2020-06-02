@@ -5,8 +5,9 @@ import com.netcracker.lab.entities.Person;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import ru.vsu.lab.entities.IDivision;
+import ru.vsu.lab.entities.IPerson;
 import ru.vsu.lab.entities.enums.Gender;
-import ru.vsu.lab.repository.IPersonRepository;
+import ru.vsu.lab.repository.IRepository;
 
 import java.io.Reader;
 import java.math.BigDecimal;
@@ -29,7 +30,7 @@ public class CSVLoader {
     private String path;
 
     /** Репозиторий для записи информации из файла. */
-    private IPersonRepository repository;
+    private IRepository<IPerson> repository;
 
     /**
      * Метод доступа ко всем отделам из файла.
@@ -50,7 +51,7 @@ public class CSVLoader {
      * @param repository репозиторий для записи информации из файла.
      * @param path директория файла.
      */
-    CSVLoader(IPersonRepository repository, String path) {
+    public CSVLoader(IRepository<IPerson> repository, String path) {
         this.repository = repository;
         divisions = new HashSet<>();
         this.path = path;
@@ -61,7 +62,7 @@ public class CSVLoader {
      * Метод доступа к репозиторию.
      * @return заполненный репозиторий.
      */
-    public IPersonRepository getRepository() {
+    public IRepository<IPerson> getRepository() {
         return repository;
     }
 

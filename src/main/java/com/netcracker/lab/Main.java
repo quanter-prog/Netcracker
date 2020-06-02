@@ -21,19 +21,15 @@ public class Main {
      * @param args возможные (но необязательные входные значения)
      */
     public static void main(String[] args) {
-        try {
-            LabFactory factory = new LabFactory();
-            CSVLoader loader = new CSVLoader(factory.createPersonRepository(), PATH);
+        LabFactory factory = new LabFactory();
+        CSVLoader loader = new CSVLoader(factory.createRepository(IPerson.class), PATH);
 
-            // From PersonRepository to XML
-            XMLParser.parseRepository(loader.getRepository(), XML_PATH);
+        // From PersonRepository to XML
+        XMLParser.parseRepository(loader.getRepository(), XML_PATH);
 
-            // From XML to PersonRepository
-            for (IPerson person : Objects.requireNonNull(XMLResolver.resolveXML(XML_PATH)).toList()) {
-                System.out.println(person.toString());
-            }
-        } catch (InjectorException e) {
-            e.printStackTrace();
+        // From XML to PersonRepository
+        for (IPerson person : Objects.requireNonNull(XMLResolver.resolveXML(XML_PATH)).toList()) {
+           System.out.println(person.toString());
         }
     }
 }
