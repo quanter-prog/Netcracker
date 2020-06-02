@@ -3,6 +3,7 @@ package com.netcracker.lab.repository;
 import com.netcracker.lab.inject.LabInject;
 import com.netcracker.lab.sort_methods.ISorter;
 import com.netcracker.lab.sort_methods.QuickSort;
+import ru.vsu.lab.entities.IPerson;
 import ru.vsu.lab.repository.IRepository;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -11,9 +12,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
@@ -37,7 +36,7 @@ public class Repository<T> implements IRepository<T> {
 
     /** Пустой массив для хранения экземпляров класса. */
     @XmlElement(name = "bank")
-    private Object[] bank;
+    private T[] bank;
 
     /** Индекс последнего элемента. */
     private int length = 0;
@@ -47,7 +46,7 @@ public class Repository<T> implements IRepository<T> {
      * В нём выделяется память для массива, хранящего экземпляры класса.
      */
     public Repository() {
-        bank = new Object[10];
+        bank = (T[]) new Object[10];
     }
 
     /**
@@ -57,7 +56,7 @@ public class Repository<T> implements IRepository<T> {
      * @param repositorySize размер репозитория
      */
     public Repository(int repositorySize) {
-        bank = new Object[repositorySize];
+        bank = (T[]) new Object[repositorySize];
     }
 
     public static class Adapter extends XmlAdapter<Repository, IRepository> {
@@ -69,7 +68,7 @@ public class Repository<T> implements IRepository<T> {
      *Метод, увеличивающий массив bank.
      */
     private void increaseCapacity() {
-        Object[] localBank = new Object[bank.length + (bank.length + 2) / 2];
+        T[] localBank = (T[]) new Object[bank.length + (bank.length + 2) / 2];
 
         System.arraycopy(bank, 0, localBank,
                 0, bank.length);
@@ -129,8 +128,10 @@ public class Repository<T> implements IRepository<T> {
     @Override
     public T get(int index) {
         if (index < length) {
+            log.info("Get element by index.");
             return (T) bank[index];
         } else {
+            log.warning("No element found!");
             return null;
         }
     }
@@ -167,9 +168,16 @@ public class Repository<T> implements IRepository<T> {
         return null;
     }
 
+    private void trimToSize() {
+        T[] localBank = (T[]) new Object[length];
+        System.arraycopy(bank, 0, localBank, 0, length);
+        bank = localBank;
+    }
+
     @Override
     public List<T> toList() {
-        return Arrays.asList((T) bank);
+        this.trimToSize();
+        return Arrays.asList(bank);
     }
 
     @Override

@@ -1,9 +1,9 @@
 package com.netcracker.lab;
 
-import com.netcracker.lab.exceptions.InjectorException;
 import com.netcracker.lab.factory.LabFactory;
 import com.netcracker.lab.jaxb.XMLParser;
 import com.netcracker.lab.jaxb.XMLResolver;
+import com.netcracker.lab.repository.Repository;
 import ru.vsu.lab.entities.IPerson;
 
 import java.util.Objects;
@@ -28,8 +28,9 @@ public class Main {
         XMLParser.parseRepository(loader.getRepository(), XML_PATH);
 
         // From XML to PersonRepository
-        for (IPerson person : Objects.requireNonNull(XMLResolver.resolveXML(XML_PATH)).toList()) {
-           System.out.println(person.toString());
+        Repository repository = XMLResolver.resolveXML(XML_PATH);
+        for (Object object : repository.toList()) {
+            System.out.println(object.toString());
         }
     }
 }

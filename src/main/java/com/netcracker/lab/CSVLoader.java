@@ -132,6 +132,6 @@ public class CSVLoader {
             ex.printStackTrace();
         }
 
-        log.info("CSV file was written in person repository.");
+        log.info("Repository was loaded from CSV file.");
     }
 }

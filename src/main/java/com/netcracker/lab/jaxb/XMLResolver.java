@@ -1,7 +1,7 @@
 package com.netcracker.lab.jaxb;
 
-import com.netcracker.lab.repository.PersonRepository;
-import ru.vsu.lab.repository.IPersonRepository;
+import com.netcracker.lab.entities.Person;
+import com.netcracker.lab.repository.Repository;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -18,12 +18,12 @@ public class XMLResolver {
      * Основной метод для экспортирования.
      * @param xml_path путь до xml файла.
      */
-    public static IPersonRepository resolveXML(String xml_path) {
+    public static Repository resolveXML(String xml_path) {
         try {
-            JAXBContext context = JAXBContext.newInstance(PersonRepository.class);
+            JAXBContext context = JAXBContext.newInstance(Repository.class, Person.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
 
-            return (IPersonRepository) unmarshaller.unmarshal(new FileReader(xml_path));
+            return (Repository) unmarshaller.unmarshal(new FileReader(xml_path));
         } catch (JAXBException | FileNotFoundException e) {
             e.printStackTrace();
         }

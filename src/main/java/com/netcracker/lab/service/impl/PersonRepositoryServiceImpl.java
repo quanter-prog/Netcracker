@@ -18,18 +18,18 @@ public class PersonRepositoryServiceImpl implements IPersonRepositoryService {
         LabFactory factory = new LabFactory();
         repository = factory.createRepository(IPerson.class);
         CSVLoader loader = new CSVLoader(repository, "src/main/resources/persons.csv");
+        this.repository = loader.getRepository();
     }
 
     @Override
     public String getUserNameById(int id) {
-        Person person =(Person) repository.get(id);
+        Person person = (Person) repository.get(id);
         return person.getFirstName();
-
     }
 
     @Override
-    public long getCountUsersByAge(int age)  {
+    public long getCountUsersByAge(int age) {
         repository.toList();
-        return repository.toList().stream().filter(x->x.getAge()>25).count();
+        return repository.toList().stream().filter(x -> x.getAge() > 25).count();
     }
 }
