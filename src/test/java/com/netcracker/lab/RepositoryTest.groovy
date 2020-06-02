@@ -3,13 +3,10 @@ package com.netcracker.lab
 import com.netcracker.lab.entities.Division
 import com.netcracker.lab.entities.Person
 import com.netcracker.lab.entities.comparators.PersonAgeComparator
-import com.netcracker.lab.entities.comparators.PersonNameComparator
-import com.netcracker.lab.entities.comparators.PersonSalaryComparator
 import com.netcracker.lab.factory.LabFactory
 import com.netcracker.lab.repository.PersonRepository
 import ru.vsu.lab.entities.IPerson
 import ru.vsu.lab.entities.enums.Gender
-import ru.vsu.lab.repository.IPersonRepository
 
 import java.util.function.Predicate
 

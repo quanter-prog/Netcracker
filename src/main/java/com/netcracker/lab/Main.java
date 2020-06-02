@@ -1,6 +1,5 @@
 package com.netcracker.lab;
 
-import com.netcracker.lab.entities.Person;
 import com.netcracker.lab.exceptions.InjectorException;
 import com.netcracker.lab.factory.LabFactory;
 import com.netcracker.lab.jaxb.XMLParser;
