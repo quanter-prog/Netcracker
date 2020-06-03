@@ -9,7 +9,7 @@ import ru.vsu.lab.repository.IRepository;
 
 import javax.jws.WebService;
 
-@WebService
+@WebService(endpointInterface = "com.netcracker.lab.service.IPersonRepositoryService")
 public class PersonRepositoryServiceImpl implements IPersonRepositoryService {
 
     IRepository<IPerson> repository;
